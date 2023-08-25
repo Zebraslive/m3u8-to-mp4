@@ -50,10 +50,8 @@ tracking progress
 var m3u8ToMp4 = require("m3u8-to-mp4");
 var converter = new m3u8ToMp4();
 
-async function download_hls(url, video_path, dob) {
+async function download_hls(url, video_path) {
     return new Promise(async (resolve, reject) => {
-      global.currentEvent = eventx;
-
   await converter
 .setInputFile(url)
 .setOutputFile(video_path+'.mp4')
@@ -67,9 +65,8 @@ async function download_hls(url, video_path, dob) {
         onEnd: () => {console.log('Finished Download!')}
       })
 .then(async() => {
-  //console.log("File converted");
-  eventx.sender.send('finishedDownload', 'done downloading.');
-addTojson(dob, function(x) {resolve(true)});
+  console.log("File converted");
+return resolve(true);
 
 });
 });
