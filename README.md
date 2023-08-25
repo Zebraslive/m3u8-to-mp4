@@ -44,17 +44,34 @@ var converter = new m3u8ToMp4();
 })();
 ```
 
-or if you want to use it with _.then()_ instead of async/await:
+tracking progress
 
 ```js
 var m3u8ToMp4 = require("m3u8-to-mp4");
 var converter = new m3u8ToMp4();
 
-converter
-  .setInputFile("https://<URL_OF_THE_WEBSITE>/<PATH_TO_THE_M3U8_FILE>")
-  .setOutputFile("dummy.mp4")
-  .start()
-  .then(() => {
-    console.log("File converted");
-  });
+async function download_hls(url, video_path, dob) {
+    return new Promise(async (resolve, reject) => {
+      global.currentEvent = eventx;
+
+  await converter
+.setInputFile(url)
+.setOutputFile(video_path+'.mp4')
+.start({
+        onProgress: progress => { if (typeof progress.percent !== 'undefined' && progress.percent !== null){
+         console.log('Converting to mp4...'+progress.percent.toFixed(2)+'%');
+        } else {
+  console.log('Converting to mp4...0.01%');
+          
+        }  },
+        onEnd: () => {console.log('Finished Download!')}
+      })
+.then(async() => {
+  //console.log("File converted");
+  eventx.sender.send('finishedDownload', 'done downloading.');
+addTojson(dob, function(x) {resolve(true)});
+
+});
+});
+}
 ```
